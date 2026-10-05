@@ -81,3 +81,21 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 ## Expected results
 * Should properly close out of CiCo
 * Should allow for CiCo to boot up after the closing as normal.
+
+# Module 6: Automatically submit after last digit is entered
+
+## Test steps
+1. Build and run CiCo.
+2. Enter 0000000, seven 0's, into the field and don't press enter.
+3. Enter one more 0
+4. Wait for the status panel to close
+5. Enter 9999999, seven 9's, into the field and don't press enter.
+6. Enter one more 9
+7. Click "OK" or wait for the error panel to go away.
+
+## Expected results
+* After step 2 the main panel should still be displayed with the seven 0's
+* After step 3 the status panel should appear with the user Developer checked in without clicking a button or pressing enter.
+* After step 5 the main panel should still be displayed with the seven 9's
+* After step 6 the error panel appears without clicking a button or pressing enter.
+* No update button should display on the main panel.
