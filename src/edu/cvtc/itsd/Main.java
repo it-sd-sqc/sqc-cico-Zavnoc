@@ -41,8 +41,13 @@ private static class InputFilter extends DocumentFilter {
   public void insertString(FilterBypass fb, int offset, String stringToAdd, AttributeSet attr)
       throws BadLocationException
   {
-    if (fb.getDocument() != null && stringToAdd != null && stringToAdd.matches("\\d+")) {
+    if (fb.getDocument() != null && stringToAdd != null || stringToAdd.matches("\\d+")) {
       super.insertString(fb, offset, stringToAdd, attr);
+
+      //Auto submit when full length reached
+      if (fb.getDocument().getLength() == MAX_LENGTH) {
+        Main.processCard();
+      }
     }
     else {
       Toolkit.getDefaultToolkit().beep();
@@ -53,8 +58,13 @@ private static class InputFilter extends DocumentFilter {
   public void replace(FilterBypass fb, int offset, int lengthToDelete, String stringToAdd, AttributeSet attr)
       throws BadLocationException
   {
-    if (fb.getDocument() != null && stringToAdd != null && stringToAdd.matches("\\d+")) {
+    if (fb.getDocument() != null && stringToAdd != null || stringToAdd.matches("\\d+")) {
       super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
+
+      //Auto submit when full length reached
+      if (fb.getDocument().getLength() == MAX_LENGTH) {
+        Main.processCard();
+      }
     }
     else {
       Toolkit.getDefaultToolkit().beep();
@@ -264,11 +274,11 @@ private static class InputFilter extends DocumentFilter {
     fieldNumber.setForeground(Color.magenta);
     panelMain.add(fieldNumber);
 
-    JButton updateButton = new JButton("Update");
-    updateButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    updateButton.addActionListener(new Update());
-    updateButton.setForeground(Color.green);
-    panelMain.add(updateButton);
+    //JButton updateButton = new JButton("Update");
+    //updateButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+    //updateButton.addActionListener(new Update());
+    //updateButton.setForeground(Color.green);
+    //panelMain.add(updateButton);
 
     panelMain.add(Box.createVerticalGlue());
 
