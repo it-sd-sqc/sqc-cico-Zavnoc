@@ -34,15 +34,20 @@ public class Main {
 
   // Internal classes ///////////////////////////////////////////////////////////
   // InputFilter manages user input to the card number field.
-private static class InputFilter extends DocumentFilter {
+  private static class InputFilter extends DocumentFilter {
   private static final int MAX_LENGTH = 8;
 
   @Override
   public void insertString(FilterBypass fb, int offset, String stringToAdd, AttributeSet attr)
-      throws BadLocationException
-  {
-    if (fb.getDocument() != null && stringToAdd != null && stringToAdd.matches("\\d+")) {
-      super.insertString(fb, offset, stringToAdd, attr);
+      throws BadLocationException {
+    if (stringToAdd != null && stringToAdd.matches("\\d+")) {
+      if (fb.getDocument().getLength() + stringToAdd.length() <= MAX_LENGTH) {
+        super.insertString(fb, offset, stringToAdd, attr);
+
+        if (fb.getDocument().getLength() == MAX_LENGTH) {
+          SwingUtilities.invokeLater(Main::processCard);
+        }
+      }
     }
     else {
       Toolkit.getDefaultToolkit().beep();
@@ -51,24 +56,24 @@ private static class InputFilter extends DocumentFilter {
 
   @Override
   public void replace(FilterBypass fb, int offset, int lengthToDelete, String stringToAdd, AttributeSet attr)
-      throws BadLocationException
-  {
-    if (fb.getDocument() != null && stringToAdd != null && stringToAdd.matches("\\d+")) {
-      super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
+      throws BadLocationException {
+    if (stringToAdd == null || stringToAdd.isEmpty() || stringToAdd.matches("\\d+")) {
+      if (fb.getDocument().getLength() - lengthToDelete
+          + (stringToAdd == null ? 0 : stringToAdd.length()) <= MAX_LENGTH) {
+        super.replace(fb, offset, lengthToDelete, stringToAdd, attr);
+
+        if (fb.getDocument().getLength() == MAX_LENGTH) {
+          SwingUtilities.invokeLater(Main::processCard);
+        }
+      }
     }
     else {
       Toolkit.getDefaultToolkit().beep();
     }
   }
 }
-
-
   // Lookup the card information after button press ///////////////////////////
-  public static class Update implements ActionListener {
-    public void actionPerformed(ActionEvent evt) {
-      Main.processCard();
-    }
-  }
+  
 
   // Revert to the main panel after a button press ////////////////////////////
   public static class Handler implements ActionListener {
@@ -264,11 +269,7 @@ private static class InputFilter extends DocumentFilter {
     fieldNumber.setForeground(Color.magenta);
     panelMain.add(fieldNumber);
 
-    JButton updateButton = new JButton("Update");
-    updateButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-    updateButton.addActionListener(new Update());
-    updateButton.setForeground(Color.green);
-    panelMain.add(updateButton);
+    
 
     panelMain.add(Box.createVerticalGlue());
 
