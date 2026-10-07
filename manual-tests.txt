@@ -81,3 +81,13 @@ Use `./build.sh` to build CiCo and `./run.sh` to run it if using the command lin
 ## Expected results
 * Should properly close out of CiCo
 * Should allow for CiCo to boot up after the closing as normal.
+
+# Module 5: Automatically submit card number
+
+## Test Steps
+1. Build and run CiCo.
+2. Enter 00000000 into the card number field without pressing Enter or clicking Update.
+
+## Expected results
+* The card number should automatically be submitted after the eighth digit is entered.
+* The check-in process should begin without requiring the user to press Enter or click Update.
